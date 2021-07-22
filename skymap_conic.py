@@ -62,8 +62,6 @@ plot_scale          = 180/math.pi
 x_shift             = 0
 y_shift             = 0
 
-magic_num           = 9999 #any large enough number
-
 annotation_on       = 1
 
 plot_alpha          = 0.5
@@ -448,13 +446,10 @@ for i in range(360):
 horizon_conic.x = list(map(transform_x_conic, horizon_conic.RA, horizon_conic.Dec))
 horizon_conic.y = list(map(transform_y_conic, horizon_conic.RA, horizon_conic.Dec))
 
-horizon_conic_x = [x for x in horizon_conic.x if x != magic_num] # remove astray pts
-horizon_conic_y = [y for y in horizon_conic.y if y != magic_num]
-
 #plt.plot(horizon_conic_x,horizon_conic_y,'g-',zorder=1)
 
 # horizon size
-hori_border_conic = max(horizon_conic_x)-min(horizon_conic_x)
+hori_border_conic = max(horizon_conic.x)-min(horizon_conic.x)
 
 #grid
 
@@ -477,8 +472,6 @@ for j in range(13):
 for i in range(12):
 
     plt.plot([transform_x_conic(30*i,90),transform_x_conic(30*i,-90)],[transform_y_conic(30*i,90),transform_y_conic(30*i,-90)],color=(0.1,0.1,0.75,plot_alpha),zorder=1)
-
-
 
 # equator
 for i in range(360):
@@ -605,12 +598,6 @@ for i in range(len(constellation_line_conic)):
 constellation_line_z_list_conic = zip(constellation_line_z_xy1_conic,constellation_line_z_xy2_conic)
 constellation_line_list_conic = zip(constellation_line_xy1_conic,constellation_line_xy2_conic)
 
-# remove astray pts
-constellation_line_z_list_conic = [([a, b], [c, d]) for ([a, b], [c, d]) in constellation_line_z_list_conic
-                                   if a != magic_num and b != magic_num and c != magic_num and d != magic_num] 
-constellation_line_list_conic = [([a, b], [c, d]) for ([a, b], [c, d]) in constellation_line_list_conic
-                                 if a != magic_num and b != magic_num and c != magic_num and d != magic_num]
-
 lc_west_z_conic = mc.LineCollection(constellation_line_z_list_conic, colors='yellow', zorder=10+2.5)
 lc_west_conic = mc.LineCollection(constellation_line_list_conic, colors='white', zorder=10+2.5)
 lc_west_z_conic.set_alpha(plot_alpha)
@@ -647,7 +634,6 @@ if annotation_on == 1:
         else:
             ax0.annotate(str(n),(numpy.mean(x),numpy.mean(y)-labelxy),color='w')
 
-
 # milkyway
 MW_line_list_conic = []
 for df in MW_list:
@@ -662,10 +648,6 @@ for df in MW_list:
             MW_line_list_conic.append([(df.x[i],df.y[i]),(df.x[i+1]-360,df.y[i+1])])
         else:
             MW_line_list_conic.append([(df.x[i],df.y[i]),(df.x[i+1],df.y[i+1])])
-
-# remove astray pts
-MW_line_list_conic = [([a, b], [c, d]) for ([a, b], [c, d]) in MW_line_list_conic
-                      if a != magic_num and b != magic_num and c != magic_num and d != magic_num] 
 
 lc_MW_conic = mc.LineCollection(MW_line_list_conic, colors='b',alpha=plot_alpha, zorder=1+2.5)
 ax0.add_collection(lc_MW_conic)
@@ -686,8 +668,7 @@ for i in range(len(boundary)-1):
         else:
             boundary_line_list_conic.append([(boundary.x[i],boundary.y[i]),(boundary.x[i+1],boundary.y[i+1])])
 
-boundary_line_list_conic = [([a, b], [c, d]) for ([a, b], [c, d]) in boundary_line_list_conic
-                            if a != magic_num and b != magic_num and c != magic_num and d != magic_num] 
+boundary_line_list_conic = [([a, b], [c, d]) for ([a, b], [c, d]) in boundary_line_list_conic] 
 
 lc_boundary_conic = mc.LineCollection(boundary_line_list_conic, colors=[1,0.5,0,0.15],alpha=plot_alpha/4, zorder=1+2.5)
 ax0.add_collection(lc_boundary_conic)
