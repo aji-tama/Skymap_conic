@@ -668,8 +668,6 @@ for i in range(len(boundary)-1):
         else:
             boundary_line_list_conic.append([(boundary.x[i],boundary.y[i]),(boundary.x[i+1],boundary.y[i+1])])
 
-boundary_line_list_conic = [([a, b], [c, d]) for ([a, b], [c, d]) in boundary_line_list_conic] 
-
 lc_boundary_conic = mc.LineCollection(boundary_line_list_conic, colors=[1,0.5,0,0.15],alpha=plot_alpha/4, zorder=1+2.5)
 ax0.add_collection(lc_boundary_conic)
 
