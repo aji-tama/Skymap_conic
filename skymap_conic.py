@@ -465,8 +465,11 @@ for j in range(13):
 
     grid_dec.y = list(map(transform_y_conic, grid_dec.RA, grid_dec.Dec))
 
-
-    plt.plot(grid_dec.x,grid_dec.y,color=(0.1,0.1,0.75,plot_alpha),zorder=1)
+    for k in range(len(grid_dec)-1):
+        if -1 < grid_dec.x[k]-grid_dec.x[k+1] < 1: #roughly shorter than diameter of inner circle
+            plt.plot([grid_dec.x[k],grid_dec.x[k+1]],[grid_dec.y[k],grid_dec.y[k+1]],color=(0.1,0.1,0.75,plot_alpha),zorder=1)
+        
+    #plt.plot(grid_dec.x,grid_dec.y,color=(0.1,0.1,0.75,plot_alpha),zorder=1)
 
 
 for i in range(12):
@@ -480,11 +483,11 @@ for i in range(360):
 equator_conic.x = list(map(transform_x_conic, equator_conic.RA, equator_conic.Dec))
 equator_conic.y = list(map(transform_y_conic, equator_conic.RA, equator_conic.Dec))
 
-##for i in range(len(equator_conic)-1):
-##    if equator_conic.x[i]-equator_conic.x[i+1] < hori_border_conic/2:
-##        plt.plot([equator_conic.x[i],equator_conic.x[i+1]],[equator_conic.y[i],equator_conic.y[i+1]],'r-',alpha=plot_alpha,zorder=1)
+for i in range(len(equator_conic)-1):
+    if -1 < equator_conic.x[i]-equator_conic.x[i+1] < 1: #roughly shorter than diameter of inner circle
+        plt.plot([equator_conic.x[i],equator_conic.x[i+1]],[equator_conic.y[i],equator_conic.y[i+1]],'r-',alpha=plot_alpha,zorder=1)
 
-plt.plot(equator_conic.x,equator_conic.y,'r-',alpha=plot_alpha,zorder=1)
+#plt.plot(equator_conic.x,equator_conic.y,'r-',alpha=plot_alpha,zorder=1)
 
 # ecliptic
 epsilon_J2000 = 23.4392911
@@ -495,11 +498,11 @@ for i in range(360):
 ecliptic_conic.x = list(map(transform_x_conic, ecliptic_conic.RA, ecliptic_conic.Dec))
 ecliptic_conic.y = list(map(transform_y_conic, ecliptic_conic.RA, ecliptic_conic.Dec))
 
-##for i in range(len(ecliptic_conic)-1):
-##    if ecliptic_conic.x[i]-ecliptic_conic.x[i+1] < hori_border_conic/2:
-##        plt.plot([ecliptic_conic.x[i],ecliptic_conic.x[i+1]],[ecliptic_conic.y[i],ecliptic_conic.y[i+1]],'y-',alpha=plot_alpha+0.1,zorder=1)
+for i in range(len(ecliptic_conic)-1):
+    if -1 < ecliptic_conic.x[i]-ecliptic_conic.x[i+1] < 1: #roughly shorter than diameter of inner circle
+        plt.plot([ecliptic_conic.x[i],ecliptic_conic.x[i+1]],[ecliptic_conic.y[i],ecliptic_conic.y[i+1]],'y-',alpha=plot_alpha+0.1,zorder=1)
 
-plt.plot(ecliptic_conic.x,ecliptic_conic.y,'y-',alpha=plot_alpha+0.1,zorder=1)
+#plt.plot(ecliptic_conic.x,ecliptic_conic.y,'y-',alpha=plot_alpha+0.1,zorder=1)
 
 # constellations
 for df in constellation_list:
@@ -566,6 +569,7 @@ constellation_line_xy2_conic = []
 for i in range(len(constellation_line_conic)):
     for j in range(len(constellation_line_conic[i][2])):
         if constellation_line_conic[i][0][constellation_line_conic[i][2][j][0]]-constellation_line_conic[i][0][constellation_line_conic[i][2][j][1]] > hori_border_conic/2:
+            constellation_line_conic[i][0][constellation_line_conic[i][2][j][0]] = numpy.nan #unconnect astray pts
             if i in set([3,6,11,15,37,45,48,58,65,71,72,77,85]): # zodiacs
                 constellation_line_z_xy1_conic.append([(constellation_line_conic[i][0][constellation_line_conic[i][2][j][0]])-360,(constellation_line_conic[i][1][constellation_line_conic[i][2][j][0]])])
                 constellation_line_z_xy2_conic.append([(constellation_line_conic[i][0][constellation_line_conic[i][2][j][1]]),(constellation_line_conic[i][1][constellation_line_conic[i][2][j][1]])])
@@ -577,6 +581,7 @@ for i in range(len(constellation_line_conic)):
                 constellation_line_xy1_conic.append([(constellation_line_conic[i][0][constellation_line_conic[i][2][j][0]]),(constellation_line_conic[i][1][constellation_line_conic[i][2][j][0]])])
                 constellation_line_xy2_conic.append([(constellation_line_conic[i][0][constellation_line_conic[i][2][j][1]])+360,(constellation_line_conic[i][1][constellation_line_conic[i][2][j][1]])])
         elif constellation_line_conic[i][0][constellation_line_conic[i][2][j][0]]-constellation_line_conic[i][0][constellation_line_conic[i][2][j][1]] < -hori_border_conic/2:
+            constellation_line_conic[i][0][constellation_line_conic[i][2][j][1]] = numpy.nan #unconnect astray pts
             if i in set([3,6,11,15,37,45,48,58,65,71,72,77,85]): # zodiacs
                 constellation_line_z_xy1_conic.append([(constellation_line_conic[i][0][constellation_line_conic[i][2][j][0]])+360,(constellation_line_conic[i][1][constellation_line_conic[i][2][j][0]])])
                 constellation_line_z_xy2_conic.append([(constellation_line_conic[i][0][constellation_line_conic[i][2][j][1]]),(constellation_line_conic[i][1][constellation_line_conic[i][2][j][1]])])
@@ -641,9 +646,11 @@ for df in MW_list:
     df.y = list(map(transform_y_conic, df.RA, df.Dec))
     for i in range(len(df)-1):
         if df.x[i]-df.x[i+1] > hori_border_conic/2:
+            df.x[i] = numpy.nan
             MW_line_list_conic.append([(df.x[i]-360,df.y[i]),(df.x[i+1],df.y[i+1])])
             MW_line_list_conic.append([(df.x[i],df.y[i]),(df.x[i+1]+360,df.y[i+1])])
         elif df.x[i]-df.x[i+1] < -hori_border_conic/2:
+            df.x[i+1] = numpy.nan
             MW_line_list_conic.append([(df.x[i]+360,df.y[i]),(df.x[i+1],df.y[i+1])])
             MW_line_list_conic.append([(df.x[i],df.y[i]),(df.x[i+1]-360,df.y[i+1])])
         else:
@@ -660,9 +667,11 @@ boundary_line_list_conic = []
 for i in range(len(boundary)-1):
     if boundary.Constellation[i] == boundary.Constellation[i+1]:
         if boundary.x[i]-boundary.x[i+1] > hori_border_conic/2:
+            boundary.x[i] = numpy.nan
             boundary_line_list_conic.append([(boundary.x[i]-360,boundary.y[i]),(boundary.x[i+1],boundary.y[i+1])])
             boundary_line_list_conic.append([(boundary.x[i],boundary.y[i]),(boundary.x[i+1]+360,boundary.y[i+1])])
         elif boundary.x[i]-boundary.x[i+1] < -hori_border_conic/2:
+            boundary.x[i+1] = numpy.nan
             boundary_line_list_conic.append([(boundary.x[i]+360,boundary.y[i]),(boundary.x[i+1],boundary.y[i+1])])
             boundary_line_list_conic.append([(boundary.x[i],boundary.y[i]),(boundary.x[i+1]-360,boundary.y[i+1])])
         else:
@@ -680,7 +689,11 @@ mra,mdec,mau = (earth+hokoon[0]).at(DT_UTC).observe(mars).radec()
 mars_x = list(map(transform_x_conic, mra.hours*15, mdec.degrees))
 mars_y = list(map(transform_y_conic, mra.hours*15, mdec.degrees))
 
-plt.plot(mars_x,mars_y,'g-',zorder=1)
+for i in range(len(mau.au)-1):
+    if -1 < mars_x[i]-mars_x[i+1] < 1: #roughly shorter than diameter of inner circle
+        plt.plot([mars_x[i],mars_x[i+1]],[mars_y[i],mars_y[i+1]],'g-',zorder=1)
+        
+#plt.plot(mars_x,mars_y,'g-',zorder=1)
 
 for i in range(17):
     plt.scatter(mars_x[279+i*5],mars_y[279+i*5])
